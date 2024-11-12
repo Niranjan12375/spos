@@ -1,0 +1,43 @@
+package practical5lru;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class LRU {
+
+    public static void main(String[] args) {
+
+        Scanner sn = new Scanner(System.in);
+
+        System.out.print("Enter How Many Frames You Want: ");
+        int frame = sn.nextInt();
+
+        System.out.print("How Many Pages You Want: ");
+        int pg = sn.nextInt();
+
+        System.out.print("Enter Pages: ");
+        int pages[] = new int[pg];
+
+        for (int i = 0; i < pg; i++) {
+            pages[i] = sn.nextInt();
+        }
+
+        ArrayList<Integer> s = new ArrayList<>(frame);
+        int count = 0, pagefault = 0;
+
+        for (int i : pages) {
+            if (!s.contains(i)) {
+                if (s.size() == frame) {
+                    s.remove(0);
+                }
+                s.add(i);
+                pagefault++;
+            } else {
+                s.remove((Integer) i);
+                s.add(i);
+            }
+        }
+
+        System.out.print("Page Faults: " + pagefault);
+        sn.close();
+    }
+}

@@ -1,0 +1,75 @@
+package practical4sjf;
+
+import java.util.Scanner;
+
+public class SJF {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+
+        // Input: number of processes
+        System.out.println("Enter number of processes:");
+        int n = sc.nextInt();
+        
+        // Declare necessary arrays
+        int pid[] = new int[n];       // Process IDs
+        int at[] = new int[n];        // Arrival times
+        int bt[] = new int[n];        // Burst times
+        int ct[] = new int[n];        // Completion times
+        int ta[] = new int[n];        // Turnaround times
+        int wt[] = new int[n];        // Waiting times
+        int f[] = new int[n];         // Flag to check if process is complete
+        
+        int st = 0, tot = 0;          // st: system time, tot: total completed processes
+        float avgwt = 0, avgta = 0;   // Averages for waiting time and turnaround time
+        
+        // Input arrival and burst times
+        for (int i = 0; i < n; i++) {
+            System.out.println("Enter process " + (i + 1) + " arrival time:");
+            at[i] = sc.nextInt();
+            System.out.println("Enter process " + (i + 1) + " burst time:");
+            bt[i] = sc.nextInt();
+            pid[i] = i + 1;  // Process ID
+            f[i] = 0;        // Mark process as incomplete
+        }
+        
+        // Main scheduling loop
+        while (tot < n) {
+            int c = n, min = Integer.MAX_VALUE;
+            
+            // Find the process with the shortest burst time that has arrived
+            for (int i = 0; i < n; i++) {
+                if ((at[i] <= st) && (f[i] == 0) && (bt[i] < min)) {
+                    min = bt[i];
+                    c = i;
+                }
+            }
+            
+            // If no process is ready, increment system time
+            if (c == n) {
+                st++;
+            } else {
+                // Process found, execute it
+                ct[c] = st + bt[c];       // Completion time
+                st += bt[c];              // Update system time
+                ta[c] = ct[c] - at[c];    // Turnaround time
+                wt[c] = ta[c] - bt[c];    // Waiting time
+                f[c] = 1;                 // Mark process as completed
+                tot++;                    // Increment total completed
+            }
+        }
+        
+        // Output the results
+        System.out.println("\nPid\tArrival\tBurst\tComplete\tTurnaround\tWaiting");
+        for (int i = 0; i < n; i++) {
+            avgwt += wt[i];
+            avgta += ta[i];
+            System.out.println(pid[i] + "\t" + at[i] + "\t" + bt[i] + "\t" + ct[i] + "\t\t" + ta[i] + "\t\t" + wt[i]);
+        }
+        
+        // Output average waiting and turnaround time
+        System.out.println("\nAverage Turnaround Time: " + (avgta / n));
+        System.out.println("Average Waiting Time: " + (avgwt / n));
+        
+        sc.close();
+    }
+}
